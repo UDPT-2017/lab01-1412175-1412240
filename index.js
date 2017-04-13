@@ -106,7 +106,6 @@ app.get('/photos/:id',function(req,res){
                          views: row.views,
                          id_views: row.id_views
                        });
-                         console.log(row.name);
                      });
                      if(!req.session.username){
                        res.redirect('/login');
