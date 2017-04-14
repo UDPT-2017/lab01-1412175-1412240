@@ -22,5 +22,5 @@ $(document).ready(function(){
       document.getElementsByClassName("blog-sidenav")[0].style.display = "none";
       document.getElementsByClassName("drag-out")[0].style.display = "none";
       document.getElementsByClassName("blog-main")[0].style.marginLeft = "15px";
-  })
+  });
 });

@@ -43,12 +43,13 @@ app.get('/albums',function(req,res){
   var namebcrumbs =[
     'Albums'
   ]
+  client.query("UPDATE albums set views = ( select sum(Views)  from photos where photos.id_albums = albums.id)");
   var query = client.query("SELECT * FROM albums",function(err, result) {
                      result.rows.forEach(function(row){
                        images.push({
                          id: row.id,
                          name: row.name,
-                         creator: row.crator,
+                         creator: row.creator,
                          views: row.views,
                          image: 'images/'+ row.name + '/'+ row.image
                        });
@@ -88,21 +89,20 @@ app.get('/about',function(req,res){
                         about: 'active'});
 });
 
-app.get('/photos/:id',function(req,res){
+app.get('/albums/:id',function(req,res){
   var client = new pg.Client(conString);
   client.connect();
   var images=[];
-  var name_album='';
   var namebcrumbs =[
     'Albums',
     'Photos'
   ];
-  var query = client.query("SELECT * FROM photos where id_albums = $1",[req.params.id],function(err, result) {
+  var query = client.query("SELECT * from select_album($1);",[req.params.id],function(err, result) {
                      result.rows.forEach(function(row){
                        images.push({
                          id: row.id,
                          name: row.name,
-                         creator: row.crator,
+                         creator: row.creator,
                          views: row.views,
                          id_views: row.id_views
                        });
@@ -119,6 +119,40 @@ app.get('/photos/:id',function(req,res){
                       client.end();
            });
 });
+
+app.get('/photos/:id',function(req,res){
+  var client = new pg.Client(conString);
+  var images=[];
+  var namebcrumbs =[
+    'Albums',
+    'Photos',
+    req.params.id
+  ];
+  client.connect();
+  client.query("UPDATE photos set views = views+1 where id= $1;",[req.params.id]);
+  var query = client.query("select * from photos where id= $1;",[req.params.id],function(err, result) {
+              result.rows.forEach(function(row){
+                    images.push({
+                          id: row.id,
+                          name: row.name,
+                          creator: row.creator,
+                          views: row.views,
+                          id_views: row.id_views
+                        });
+                  });
+                  if(!req.session.username){
+                    res.redirect('/login');
+                  }
+                  else
+                    res.render('imagee',{title: 'MyBlog.me Photos',
+                                         images: images,
+                                         namebcrumbs: namebcrumbs,
+                                         layout: 'app',
+                                         album: 'active'});
+                   client.end();
+           });
+});
+
 app.post('/log-in',function(req,res) {
     var client = new pg.Client(conString);
     client.connect();
