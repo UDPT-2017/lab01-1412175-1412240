@@ -81,12 +81,14 @@ app.get('/about',function(req,res){
   if(!req.session.username){
     res.redirect('/login');
   }
-  else
-    res.render('about',{title: 'MyBlog.me about',
-                        message: 'About',
-                        layout: 'app',
-                        about: 'active'});
-});
+  else{
+    var image=[
+      {photo:"image/avatar1.jpg",caption:"Trần Hiệp-1412175"},
+      {photo:"image/avatar2.jpg",caption:"Bùi Đình Khánh-1412175"}
+    ];
+
+    res.render('about',{image:image});
+}});
 
 app.get('/photos/:id',function(req,res){
   var client = new pg.Client(conString);

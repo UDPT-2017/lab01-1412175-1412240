@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MyBlog.me About</title>
+
+    <link rel="stylesheet" href="css/bootstrap.css">
+      <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body style="position: relative; min-height: 100%; top: 0px;">
+    <div class="container top">
+      <a class="logo" href="home.html">
+        MyBlog
+        <span class="me">.me</span>
+      </a>
+    </div>
+  <div class="navbar1 navbar-default">
+      <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+      data-toggle="collapse"
+      data-target="#home-navbar"
+      aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+      <div class="collapse navbar-collapse blog-card-2" id="home-navbar">
+        <ul class="nav navbar-nav">
+          <li class=""><a href="home.html" class="glyphicon glyphicon-home"></a></li>
+          <li class=""><a href="home.html">Home</a></li>
+          <li class=""><a href="albums.html">Albums</a></li>
+          <li class="active"><a href="about.html">About</a></li>
+          <li class=""><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+   </div>
+   <nav class="blog-sidenav blog-collapse blog-white blog-card-2">
+    <div class="sidenav">
+      <ul class="">
+        <li><a href="#">Profile</a></li>
+        <li><a href="#">Groups</a></li>
+        <li><a href="#">Page</a></li>
+        <li><a href="#">Etc</a></li>
+      </ul>
+    </div>
+   </nav>
+   <nav class="drag-in">
+     <button type="button" class="btn btn-default" aria-label="Left Align" id="btn-in">
+       <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+     </button>
+   </nav>
+   <nav class="drag-out">
+     <button type="button" class="btn btn-default"  id="btn-out">
+       <span class="glyphicon glyphicon-chevron-left" ></span>
+     </button>
+   </nav>
+   <div class="blog-main">
+     <div class="blog-row blog-margin-bottom">
+         <h1>About</h1>
+          <p>Nhóm gồm 2 thành viên:</p>
+          <p>Nhóm chúng tôi là "Chim cút nướng". Gồm 2 thành viên:</p>
+        <div class="row">
+          {{#each image}}
+          <div class="col-sm-4 col-xs-6" style ="margin-right:40px;border:">
+            <div class="photo">
+              <img src="{{this.photo}}" alt="">
+            </div>
+            <p style="text-align:center;">{{this.caption}}</p>
+          </div>
+
+
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <p>Địa chỉ:Trường đại học khoa học tự nhiên TPHCM 227, Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh </p>
+            <div id="map" style="line-height=10px;width:400px;height:300px;background:yellow;"class="relative"></div>
+          </div>
+
+        </div>
+
+
+        </div>
+
+
+        </div>
+      </div>
+
+
+
+
+     </div>
+   </div>
+   <div class="blog-footer">
+        <span class="glyphicon glyphicon-pencil"></span>
+        Designed by 1412175 & 1412240
+   </div>
+    <script src="js/jquery.min.js" charset="utf-8"></script>
+    <script src="js/bootstrap.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+      $(window).resize(function() {
+      var path = $(this);
+      var contW = path.width();
+      if(contW > 768){
+          document.getElementsByClassName("blog-sidenav")[0].style.display = "block";
+          document.getElementsByClassName("blog-main")[0].style.marginLeft = "230px";
+          document.getElementsByClassName("drag-out")[0].style.display = "none";
+        }
+      else{
+            document.getElementsByClassName("blog-sidenav")[0].style.display = "none";
+            document.getElementsByClassName("blog-main")[0].style.marginLeft = "15px";
+        }
+      });
+      $('#btn-in').click(function(){
+          document.getElementsByClassName("blog-sidenav")[0].style.display = "block";
+          document.getElementsByClassName("drag-out")[0].style.display = "block";
+          document.getElementsByClassName("blog-main")[0].style.marginLeft = "230px";
+      })
+      $('#btn-out').click(function(){
+          document.getElementsByClassName("blog-sidenav")[0].style.display = "none";
+          document.getElementsByClassName("drag-out")[0].style.display = "none";
+          document.getElementsByClassName("blog-main")[0].style.marginLeft = "15px";
+      })
+    });
+    function myMap() {
+      var mapOptions = {
+    center: new google.maps.LatLng(10.762828, 106.681984),
+    zoom: 15,
+    mapTypeId: google.maps.MapTypeId.HYBRID
+}
+    var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxlJZlU3TW_MGYFbe5VbjZxRXWZsAZ6qg&callback=myMap"></script>
+  </body>
+</html>
