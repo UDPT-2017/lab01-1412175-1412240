@@ -87,7 +87,13 @@ app.get('/about',function(req,res){
       {photo:"image/avatar2.jpg",caption:"Bùi Đình Khánh-1412175"}
     ];
 
-    res.render('about',{image:image});
+    res.render('about',{title: 'MyBlog.me About',
+                        message: 'About Us',
+                        info:'Nhóm chúng tôi là "Chim cút nướng". Gồm 2 thành viên:',
+                        address:'Địa chỉ:Trường đại học khoa học tự nhiên TPHCM 227, Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh',
+                        layout: 'app',
+                        about: 'active',
+                        image:image});
 }});
 
 app.get('/photos/:id',function(req,res){
