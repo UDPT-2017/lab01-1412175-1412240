@@ -8,28 +8,17 @@
             </div>
             <p style="text-align:center;">{{this.caption}}</p>
         </div>
-        {{/each}}
+    {{/each}}
 
 
 
 </div>
 <div class="row">
 
-        <div class="col-sm-6">
-          <p>{{address}} </p>
-          <div id="map" style="line-height=10px;width:400px;height:300px;background:yellow;"class="relative"></div>
-        </div>
+    <div class="col-sm-6">
+        <p>{{address}} </p>
+        <div id="map" style="line-height=10px;width:400px;height:300px;background:yellow;" class="relative"></div>
+    </div>
 
-      </div>
-      <script type="text/javascript">
-      function myMap() {
-        var mapOptions = {
-      center: new google.maps.LatLng(10.762828, 106.681984),
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.HYBRID
-  }
-      var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-      }
-
-      </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxlJZlU3TW_MGYFbe5VbjZxRXWZsAZ6qg&callback=myMap"></script>
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxlJZlU3TW_MGYFbe5VbjZxRXWZsAZ6qg&callback=myMap"></script>

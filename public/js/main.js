@@ -24,3 +24,13 @@ $(document).ready(function(){
       document.getElementsByClassName("blog-main")[0].style.marginLeft = "15px";
   })
 });
+
+
+    function myMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng(10.762828, 106.681984),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.HYBRID
+        }
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    }
