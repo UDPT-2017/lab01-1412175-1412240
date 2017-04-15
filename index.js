@@ -67,14 +67,34 @@ app.get('/albums',function(req,res){
 });
 
 app.get('/blog',function(req,res){
-  if(!req.session.username){
-    res.redirect('/login');
-  }
-  else
-    res.render('blog',{title: 'MyBlog.me blog',
-                        message: 'Blog',
-                        layout: 'app',
-                        blog: 'active'});
+  var client = new pg.Client(conString);
+  client.connect();
+  var blog=[];
+  var namebcrumbs =[
+    'Blog'
+  ]
+  var query = client.query("SELECT * FROM Blog",function(err, result) {
+                     result.rows.forEach(function(row){
+                       blog.push({
+                         id: row.id,
+                         name: row.title,
+                         content: row.content.substr(0,15)+"...",
+                         creator:row.creator,
+                         views: row.views,
+                         image: 'images/'+ row.image
+                       });
+                     });
+                     if(!req.session.username){
+                       res.redirect('/login');
+                     }
+                     else
+                       res.render('blog',{title: 'MyBlog.me Blog',
+                                            blog: blog,
+                                            namebcrumbs: namebcrumbs,
+                                            layout: 'app',
+                                            blog: 'active'});
+                    client.end();
+           });
 });
 
 app.get('/about',function(req,res){
