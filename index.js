@@ -149,6 +149,7 @@ app.get('/albums/:id',function(req,res){
     'Albums',
     'Photos'
   ];
+
   var query = client.query("SELECT * from select_album($1);",[req.params.id],function(err, result) {
                      result.rows.forEach(function(row){
                        images.push({
@@ -175,26 +176,22 @@ app.get('/albums/:id',function(req,res){
 });
 
 app.get('/blog/:id',function(req,res){
-  var client = new pg.Client(conString);
-  client.connect();
-  var blogs=[];
-  var name_album='';
-  var namebcrumbs =[
-    'Blog',
-    'Content',
+var client = new pg.Client(conString);
+ client.connect();
+ var namebcrumbs =[
+   'Albums',
+   'Content'
+ ];
+ var query = client.query("SELECT * FROM blogs where id = $1",[req.params.id],function(err, result) {
+                       var blogs={
+                         id: result.rows[0].id,
+                         name: result.rows[0].title,
+                         content: result.rows[0].contents,
+                         creator:result.rows[0].creator,
+                         views: result.rows[0].views,
+                        image: '/'+ result.rows[0].image
+                       };
 
-  ];
-  var query = client.query("SELECT * FROM blogs where id = $1",[req.params.id],function(err, result) {
-
-                     result.rows.forEach(function(row){
-                       blogs.push({
-                         id: row.id,
-                         name: row.title,
-                         content: row.contents,
-                         creator:row.creator,
-                         views: row.views,
-                       });
-                     });
                      if(!req.session.username){
                        res.redirect('/login');
                      }
@@ -217,9 +214,11 @@ app.get('/photos/:id',function(req,res){
  var name_album='';
  var namebcrumbs =[
    'Albums',
+   'photos',
    req.params.id
  ];
- var query = client.query("SELECT * FROM photos where id_albums = $1",[req.params.id],function(err, result) {
+ client.query("UPDATE photos set views = views+1 where id= $1;",[req.params.id]);
+ var query = client.query("SELECT * FROM photos where id = $1",[req.params.id],function(err, result) {
                     result.rows.forEach(function(row){
                       images.push({
                         id: row.id,
@@ -233,7 +232,7 @@ app.get('/photos/:id',function(req,res){
                       res.redirect('/login');
                     }
                     else
-                      res.render('photos',{title: 'MyBlog.me Photos',
+                      res.render('imagee',{title: 'MyBlog.me Photos',
                                            images: images,
                                            namebcrumbs: namebcrumbs,
                                            layout: 'app',
