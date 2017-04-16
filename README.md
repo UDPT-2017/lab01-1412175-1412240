@@ -53,7 +53,10 @@ Liệt kê các **yêu cầu nâng cao** đã thực hiện:
 
 Link ảnh GIF demo ứng dụng:
 
+Đăng nhập đăng xuất đăng ký:
 ![](https://github.com/UDPT-2017/lab01-1412175-1412240/blob/master/login1.gif)
+
+Chương trình chính:
 
 ![](https://github.com/UDPT-2017/lab01-1412175-1412240/blob/master/content.gif)
 
