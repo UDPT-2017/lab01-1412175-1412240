@@ -108,7 +108,7 @@ app.get('/blog/:id',function(req,res){
   ];
   var query = client.query("SELECT * FROM Blog where id = $1",[req.params.id],function(err, result) {
                      result.rows.forEach(function(row){
-                       images.push({
+                       blog.push({
                          id: row.id,
                          name: row.title,
                          content: row.content.substr(0,15)+"...",
