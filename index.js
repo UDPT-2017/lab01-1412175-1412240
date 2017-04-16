@@ -212,37 +212,36 @@ app.get('/blog/:id',function(req,res){
 
 app.get('/photos/:id',function(req,res){
   var client = new pg.Client(conString);
-  var images=[];
-  var namebcrumbs =[
-    'Albums',
-    'Photos',
-    req.params.id
-  ];
-  client.connect();
-  client.query("UPDATE photos set views = views+1 where id= $1;",[req.params.id]);
-  var query = client.query("select * from photos where id= $1;",[req.params.id],function(err, result) {
-              result.rows.forEach(function(row){
-                    images.push({
-                          id: row.id,
-                          name: row.name,
-                          creator: row.creator,
-                          views: row.views,
-                          id_views: row.id_views
-                        });
-                  });
-                  if(!req.session.username){
-                    res.redirect('/login');
-                  }
-                  else
-                    res.render('photos',{title: 'MyBlog.me Photos',
-                                         images: images,
-                                         namebcrumbs: namebcrumbs,
-                                         layout: 'app',
-                                         username: accout.username,
-                                         ava: accout.ava,
-                                         album: 'active'});
-                   client.end();
-           });
+ client.connect();
+ var images=[];
+ var name_album='';
+ var namebcrumbs =[
+   'Albums',
+   req.params.id
+ ];
+ var query = client.query("SELECT * FROM photos where id_albums = $1",[req.params.id],function(err, result) {
+                    result.rows.forEach(function(row){
+                      images.push({
+                        id: row.id,
+                        name: row.name,
+                        creator: row.crator,
+                        views: row.views,
+                        id_views: row.id_views
+                      });
+                    });
+                    if(!req.session.username){
+                      res.redirect('/login');
+                    }
+                    else
+                      res.render('photos',{title: 'MyBlog.me Photos',
+                                           images: images,
+                                           namebcrumbs: namebcrumbs,
+                                           layout: 'app',
+                                           username: accout.username,
+                                           ava: accout.ava,
+                                           album: 'active'});
+                     client.end();
+          });
 });
 
 app.post('/login',function(req,res) {
