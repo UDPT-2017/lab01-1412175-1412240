@@ -73,14 +73,14 @@ app.get('/blog',function(req,res){
   var namebcrumbs =[
     'Blog'
   ]
-  var query = client.query("SELECT * FROM Blog",function(err, result) {
+  var query = client.query("SELECT * FROM blog",function(err, result) {
                      result.rows.forEach(function(row){
                        blog.push({
                          id: row.id,
                          name: row.title,
                          content: row.content.substr(0,15)+"...",
                          creator:row.creator,
-                         views: row.views,
+                         views: row.view,
                          image: 'images/'+ row.image
                        });
                      });
@@ -113,7 +113,7 @@ app.get('/blog/:id',function(req,res){
                          name: row.title,
                          content: row.content.substr(0,15)+"...",
                          creator:row.creator,
-                         views: row.views,
+                         views: row.view,
                        });
                          console.log(row.name);
                      });
