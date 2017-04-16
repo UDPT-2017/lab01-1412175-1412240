@@ -213,3 +213,10 @@ img{
 h2{
    color:rgb(217, 89, 8);
 }
+.img-ava{
+  height: 25px;
+  width: 25px;
+}
+.span-ava{
+  width: 40px;
+}

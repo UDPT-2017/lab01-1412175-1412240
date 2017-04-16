@@ -9,6 +9,11 @@ var conString = "postgres://AdminMyBlog:123456@localhost:5432/myBlogAdmin";
 
 require('./config/passport.js')(passport);
 
+var accout ={
+  username: '',
+  ava: ''
+};
+
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
@@ -26,6 +31,8 @@ app.get('/',function(req,res){
     res.render('home',{title: 'MyBlog.me Home',
                       message: 'this is my homepage',
                       layout: 'app',
+                      username: accout.username,
+                      ava: accout.ava,
                       home: 'active'});
 });
 
@@ -65,6 +72,8 @@ app.get('/albums',function(req,res){
                                             images: images,
                                             namebcrumbs: namebcrumbs,
                                             layout: 'app',
+                                            username: accout.username,
+                                            ava: accout.ava,
                                             album: 'active'});
                     client.end();
            });
@@ -101,6 +110,8 @@ app.get('/blog',function(req,res){
                                             blogs: blogs,
                                             namebcrumbs: namebcrumbs,
                                             layout: 'app',
+                                            username: accout.username,
+                                            ava: accout.ava,
                                             blog: 'active'});
                     client.end();
            });
@@ -124,6 +135,8 @@ app.get('/about',function(req,res){
                         address:'Địa chỉ:Trường đại học khoa học tự nhiên TPHCM 227, Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh',
                         layout: 'app',
                         about: 'active',
+                        username: accout.username,
+                        ava: accout.ava,
                         image:image});
       }
 });
@@ -154,6 +167,8 @@ app.get('/albums/:id',function(req,res){
                                             images: images,
                                             namebcrumbs: namebcrumbs,
                                             layout: 'app',
+                                            username: accout.username,
+                                            ava: accout.ava,
                                             album: 'active'});
                       client.end();
            });
@@ -179,7 +194,6 @@ app.get('/blog/:id',function(req,res){
                          creator:row.creator,
                          views: row.views,
                        });
-                         console.log(row.name);
                      });
                      if(!req.session.username){
                        res.redirect('/login');
@@ -189,6 +203,8 @@ app.get('/blog/:id',function(req,res){
                                             blogs: blogs,
                                             namebcrumbs: namebcrumbs,
                                             layout: 'app',
+                                            username: accout.username,
+                                            ava: accout.ava,
                                             blog: 'active'});
                       client.end();
            });
@@ -222,6 +238,8 @@ app.get('/photos/:id',function(req,res){
                                          images: images,
                                          namebcrumbs: namebcrumbs,
                                          layout: 'app',
+                                         username: accout.username,
+                                         ava: accout.ava,
                                          album: 'active'});
                    client.end();
            });
@@ -230,14 +248,15 @@ app.get('/photos/:id',function(req,res){
 app.post('/login',function(req,res) {
     var client = new pg.Client(conString);
     client.connect();
-    var query = client.query("SELECT username, password FROM users where (username = $1 or email=  $1) and password = $2",
+    var query = client.query("SELECT * FROM users where (username = $1 or email=  $1) and password = $2",
                      [req.body.user, req.body.pass],function(err, result) {
-
                        if(result.rowCount === 0){
                          req.session.error=true;
                          res.redirect('/login');
                        }
                         else{
+                          accout.username = result.rows[0].name;
+                          accout.ava = result.rows[0].ava;
                           req.session.username = req.body.user;
                           res.redirect('/');
                           client.end();
