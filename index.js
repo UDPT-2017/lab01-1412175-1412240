@@ -97,6 +97,39 @@ app.get('/blog',function(req,res){
            });
 });
 
+app.get('/blog/:id',function(req,res){
+  var client = new pg.Client(conString);
+  client.connect();
+  var blog=[];
+  var name_album='';
+  var namebcrumbs =[
+    Blog
+
+  ];
+  var query = client.query("SELECT * FROM Blog where id = $1",[req.params.id],function(err, result) {
+                     result.rows.forEach(function(row){
+                       images.push({
+                         id: row.id,
+                         name: row.title,
+                         content: row.content.substr(0,15)+"...",
+                         creator:row.creator,
+                         views: row.views,
+                       });
+                         console.log(row.name);
+                     });
+                     if(!req.session.username){
+                       res.redirect('/login');
+                     }
+                     else
+                       res.render('blogview',{title: 'MyBlog.me Blog',
+                                            blog: blog,
+                                            namebcrumbs: namebcrumbs,
+                                            layout: 'app',
+                                            blog: 'active'});
+                      client.end();
+           });
+});
+
 app.get('/about',function(req,res){
   if(!req.session.username){
     res.redirect('/login');
