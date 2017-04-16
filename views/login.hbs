@@ -4,18 +4,22 @@
     <title>{{title}}</title>
       <link rel="stylesheet" href="css/styles.css">
       <link rel="stylesheet" href="css/bootstrap.css">
+      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body>
     <div class="content-login">
       <h1>{{message}}</h1><br>
       <p id='login-error'>{{error}}</p>
-      <form method="post" action="/log-in">
-        <input type="text" name="user" placeholder="Username">
+      <form method="post" action="/login">
+        <input type="text" name="user" placeholder="Username or Email">
         <input type="password" name="pass" placeholder="Password">
         <input type="submit" name="login" class="btn btn-primary" value="Login">
       </form>
       <div class="register">
         <a href="/register">Register</a>
+        <a href="/auth/facebook"><i id="fb" class="fa fa-facebook-square fa-2x social"></i></a>
+        <a href=""><i id="tw" class="fa fa-twitter-square fa-2x social"></i></a>
+        <a href=""><i id="gmail" class="fa fa-envelope-square fa-2x social"></i></a>
       </div>
     </div>
     <script src="js/jquery.min.js" charset="utf-8"></script>

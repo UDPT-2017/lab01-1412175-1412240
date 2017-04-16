@@ -3,13 +3,16 @@ var exphbs  = require('express-handlebars');
 var pg = require('pg');
 var bodyParser = require('body-parser');
 var session = require('express-session');
-
+var passport = require('passport');
 var app = express();
 var conString = "postgres://AdminMyBlog:123456@localhost:5432/myBlogAdmin";
 
+require('./config/passport.js')(passport);
+
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(passport.initialize());
+  app.use(passport.session());
 app.engine('hbs', exphbs({extname: 'hbs'}));
 app.set('view engine', 'hbs');
 
@@ -51,7 +54,7 @@ app.get('/albums',function(req,res){
                          name: row.name,
                          creator: row.creator,
                          views: row.views,
-                         image: 'images/'+ row.name + '/'+ row.image
+                         image: '/images/'+ row.name + '/'+ row.image
                        });
                      });
                      if(!req.session.username){
@@ -71,22 +74,58 @@ app.get('/blog',function(req,res){
   if(!req.session.username){
     res.redirect('/login');
   }
-  else
-    res.render('blog',{title: 'MyBlog.me blog',
-                        message: 'Blog',
-                        layout: 'app',
-                        blog: 'active'});
+  else{
+    var client = new pg.Client(conString);
+    client.connect();
+    var blogs=[];
+    var namebcrumbs =[
+      'Blog'
+    ]
+    var query = client.query("SELECT * FROM blogs",function(err, result) {
+                     result.rows.forEach(function(row){
+                       blogs.push({
+                         id: row.id,
+                         name: row.title,
+                         content: row.contents.substr(0,15)+"...",
+                         creator:row.creator,
+                         views: row.views,
+                         image: row.image
+                       });
+                     });
+
+                     if(!req.session.username){
+                       res.redirect('/login');
+                     }
+                     else
+                       res.render('blog',{title: 'MyBlog.me Blog',
+                                            blogs: blogs,
+                                            namebcrumbs: namebcrumbs,
+                                            layout: 'app',
+                                            blog: 'active'});
+                    client.end();
+           });
+  }
+
 });
 
 app.get('/about',function(req,res){
   if(!req.session.username){
     res.redirect('/login');
   }
-  else
-    res.render('about',{title: 'MyBlog.me about',
-                        message: 'About',
+  else{
+    var image=[
+      {photo:"/images/avatar1.jpg",caption:"Trần Hiệp-1412175"},
+      {photo:"/images/avatar2.jpg",caption:"Bùi Đình Khánh-1412175"}
+    ];
+
+    res.render('about',{title: 'MyBlog.me About',
+                        message: 'About Us',
+                        info:'Nhóm chúng tôi là "Chim cút nướng". Gồm 2 thành viên:',
+                        address:'Địa chỉ:Trường đại học khoa học tự nhiên TPHCM 227, Nguyễn Văn Cừ, Quận 5, TP Hồ Chí Minh',
                         layout: 'app',
-                        about: 'active'});
+                        about: 'active',
+                        image:image});
+      }
 });
 
 app.get('/albums/:id',function(req,res){
@@ -116,6 +155,41 @@ app.get('/albums/:id',function(req,res){
                                             namebcrumbs: namebcrumbs,
                                             layout: 'app',
                                             album: 'active'});
+                      client.end();
+           });
+});
+
+app.get('/blog/:id',function(req,res){
+  var client = new pg.Client(conString);
+  client.connect();
+  var blogs=[];
+  var name_album='';
+  var namebcrumbs =[
+    'Blog',
+    'Content',
+
+  ];
+  var query = client.query("SELECT * FROM blogs where id = $1",[req.params.id],function(err, result) {
+
+                     result.rows.forEach(function(row){
+                       blogs.push({
+                         id: row.id,
+                         name: row.title,
+                         content: row.contents,
+                         creator:row.creator,
+                         views: row.views,
+                       });
+                         console.log(row.name);
+                     });
+                     if(!req.session.username){
+                       res.redirect('/login');
+                     }
+                     else
+                       res.render('blogview',{title: 'MyBlog.me Blog',
+                                            blogs: blogs,
+                                            namebcrumbs: namebcrumbs,
+                                            layout: 'app',
+                                            blog: 'active'});
                       client.end();
            });
 });
@@ -153,10 +227,10 @@ app.get('/photos/:id',function(req,res){
            });
 });
 
-app.post('/log-in',function(req,res) {
+app.post('/login',function(req,res) {
     var client = new pg.Client(conString);
     client.connect();
-    var query = client.query("SELECT username, password FROM users where username = $1 and password = $2",
+    var query = client.query("SELECT username, password FROM users where (username = $1 or email=  $1) and password = $2",
                      [req.body.user, req.body.pass],function(err, result) {
 
                        if(result.rowCount === 0){
@@ -179,11 +253,12 @@ app.get('/register',function(req,res){
     res.render('signup',{title: 'MyBlog.me sign-up',message: 'Sign Up'});
 });
 
-app.post('/sign-up',function(req,res) {
+app.post('/signup',function(req,res) {
+    var imgAva = '/images/ava-default.png';
     var client = new pg.Client(conString);
     client.connect();
-    var query = client.query("INSERT INTO users(username, password) SELECT $1::VARCHAR, $2 WHERE NOT EXISTS (SELECT username FROM users WHERE username = $1);",
-                [req.body.user, req.body.pass],function(err, result) {
+    var query = client.query("INSERT INTO users(username, password, email, ava, name) SELECT $1::VARCHAR, $2 , $3, $4, $5 WHERE NOT EXISTS (SELECT username FROM users WHERE username = $1 or email = $3);",
+                [req.body.user, req.body.pass, req.body.email, imgAva, req.body.name],function(err, result) {
                   if(result.rowCount === 0){
                     req.session.exists = true;
                     res.redirect('/register');
@@ -194,6 +269,14 @@ app.post('/sign-up',function(req,res) {
                    client.end();
         });
 });
+
+app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+   // handle the callback after facebook has authenticated the user
+app.get('/auth/facebook/callback',
+       passport.authenticate('facebook', function(err, result){
+         console.log(result);
+}));
+
 
 app.get('/logout',function(req,res){
 	req.session.destroy(function(err){
