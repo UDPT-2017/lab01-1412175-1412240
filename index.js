@@ -234,7 +234,7 @@ app.get('/photos/:id',function(req,res){
                     res.redirect('/login');
                   }
                   else
-                    res.render('imagee',{title: 'MyBlog.me Photos',
+                    res.render('photos',{title: 'MyBlog.me Photos',
                                          images: images,
                                          namebcrumbs: namebcrumbs,
                                          layout: 'app',
