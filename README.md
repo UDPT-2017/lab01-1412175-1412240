@@ -53,10 +53,10 @@ Liệt kê các **yêu cầu nâng cao** đã thực hiện:
 
 Link ảnh GIF demo ứng dụng:
 
-![login1.gif]
-![content.gif]
+![Đăng nhập đăng xuất đăng ký] (https://github.com/UDPT-2017/lab01-1412175-1412240/blob/master/login1.gif)
 
-Tạo ảnh GIF với chương trình [LiceCap](http://www.cockos.com/licecap/).
+![Chương trình chính] (https://github.com/UDPT-2017/lab01-1412175-1412240/blob/master/content.gif)
+
 
 
 ## License
